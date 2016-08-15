@@ -1,0 +1,13 @@
+#Tokenizer
+###Dataset: 20 NewsGroup Dataset
+http://qwone.com/~jason/20Newsgroups/
+- Contains 18000 news documents tagged in 20 categories  
+- training and testing
+
+###Finite state transducer : 
+- has input and output tape
+- defines relation btw set of strings
+- example: INPUT : "Hello users", OUTPUT: "Hello" "users"
+
+### Lexicon: vocabulary. Language's inventory for lexemes
+- Lexicon transducer: finite transducer that maps inflected surface form to lexical form. 
