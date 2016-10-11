@@ -5,4 +5,4 @@ Brown corpus contains 1161192 tagged words. We'll use this to create our own wor
 
 - Naive Approach: Give the most frequent tag to the word in the dataset.
 	Accuracy = 0.8566083069954099
-- 
+- Using nltk tagger: 0.602649006623 :0
