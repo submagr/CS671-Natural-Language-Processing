@@ -50,8 +50,7 @@ def multiRunWrapper(args):
 def calcPi(k, u, v):
     lst = []
     for z in Y[k-2]: 
-        #print pi[(k-1, z, u)], getProb(v, z, u), getProb(tagged_word[0], v)
-        lst.append(((k,u,v), z, pi[(k-1, z, u)]*getProb(v, z, u)*getProb(tagged_word[0], v)))
+        lst.append(((k,u,v), z, prevPi[(k-1, z, u)]*getProb(v, z, u)*getProb(tagged_word[0], v)))
     return max(lst, key = lambda item:item[1])
 
 def getTagSet(k):
@@ -65,8 +64,10 @@ totalCorrects = 0
 for sent in test_data: 
     pi = {(0,'START', 'START'):1}
     bPtr = {}
-    sent = [('', 'START'),('', 'START')] + sent 
+    sent = [('', 'START'),('', 'START')] + sent[0:5]
     for k, tagged_word in enumerate(sent):
+        prevPi = pi
+        pi = {}
         print '>>>>>>>>', k, tagged_word
         k += 1
         Y = {}
@@ -83,7 +84,7 @@ for sent in test_data:
     for u in Y[k-1]:
         for v in Y[k]:
             assert(pi[(k,u,v)])
-            lst.append(((u,v),pi[(k,u,v)*getProb('STOP', u, v)])) 
+            lst.append(((u,v),pi[(k,u,v)]*getProb('STOP', u, v))) 
     temp = max(lst, key=lambda item:item[1])[0]
     predTags = [temp[0], temp[1]] + predTags
     for k in range(k-2, 0, -1) :
