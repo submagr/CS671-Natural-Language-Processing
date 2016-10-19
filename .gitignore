@@ -1,3 +1,6 @@
 *.swp
 *.tar
 Assignment-2/aclImdb/
+models/
+*.tar.gz
+Assignment-2/opennlp-tools-1.5.0/
