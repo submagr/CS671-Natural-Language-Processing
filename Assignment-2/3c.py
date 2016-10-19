@@ -5,10 +5,10 @@ from nltk.tokenize import word_tokenize
 from gensim.models import Word2Vec
 import numpy as np
 
-train_pos = [os.path.join("aclImdb/train/pos", z) for z in os.listdir("aclImdb/train/pos")]
-train_neg = [os.path.join("aclImdb/train/neg", z) for z in os.listdir("aclImdb/train/neg")]
-test_pos  =   [os.path.join("aclImdb/test/pos", z) for z in os.listdir("aclImdb/test/pos")]
-test_neg  =   [os.path.join("aclImdb/test/neg", z) for z in os.listdir("aclImdb/test/neg")]
+train_pos = [os.path.join("aclImdb/train/pos", z) for z in os.listdir("aclImdb/train/pos")][1:10]
+train_neg = [os.path.join("aclImdb/train/neg", z) for z in os.listdir("aclImdb/train/neg")][1:10]
+test_pos  =   [os.path.join("aclImdb/test/pos", z) for z in os.listdir("aclImdb/test/pos")][1:10]
+test_neg  =   [os.path.join("aclImdb/test/neg", z) for z in os.listdir("aclImdb/test/neg")][1:10]
 
 def read_dir(lst):
     sentences = []
