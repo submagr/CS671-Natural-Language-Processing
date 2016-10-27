@@ -1,4 +1,5 @@
 from pprint import pprint
+from copy import deepcopy
 
 
 class EarleyParser(): 
@@ -6,7 +7,7 @@ class EarleyParser():
         self.grammar = self.__read_grammar(rules)
         self.__get_terminals_nonTerminals()
         self.counter = -1
-        self.debug = 0
+        self.debug = 1
 
     def __read_grammar(self, f):
         '''
@@ -76,11 +77,11 @@ class EarleyParser():
                 for i in range(1, len(state["rule"])): 
                     symbol = state["rule"][i]
                     if state["dot"] + 1 == i:
-                        ruleStr += " * " 
+                        ruleStr += " 0 " 
                         placedDot = 1
                     ruleStr += symbol + " "
                 if not placedDot:
-                    ruleStr += " * "
+                    ruleStr += " 0 "
                 posStr = str(state["i"]) + ", "+ str(state["j"])
                 print stateId, ":: [",  ruleStr, "] [" , posStr, "] [ ", str(state["bPtr"]), " ]"
 
@@ -113,7 +114,7 @@ class EarleyParser():
         completedSymbol = state["rule"][0]
         for affectedState in chart[state["i"]]:
             if self.__isIncomplete(affectedState) and affectedState["rule"][affectedState["dot"]+1] == completedSymbol:
-                bPtr = affectedState["bPtr"]
+                bPtr = deepcopy(affectedState["bPtr"])
                 if bPtr == None:
                     bPtr = []
                 bPtr.append((chartNum, stateId))
@@ -122,13 +123,12 @@ class EarleyParser():
 
     def __to_tree(self, chart, chartNum, stateId):
         state = chart[chartNum][stateId]
-        if state["bPtr"] == None:
-            return None
         parse = [state["rule"][0]]
-        for i in range(1, len(state["rule"])):
-            tree = self.__to_tree(chart, state["bPtr"][i-1][0], state["bPtr"][i-1][1])
-            if tree is not None:
-                parse.append(tree)
+        if state["bPtr"] != None:
+            for i in range(1, len(state["rule"])):
+                tree = self.__to_tree(chart, state["bPtr"][i-1][0], state["bPtr"][i-1][1])
+                if tree is not None:
+                    parse.append(tree)
         return parse
 
     def parse(self, sentence):
@@ -182,4 +182,4 @@ if __name__ == "__main__":
         rawSentence = raw_input("Enter sentence to parse: ")
         trees = parser.parse(rawSentence.split())
         for tree in trees:
-            print parser.to_str(tree)
+            pprint(tree)
