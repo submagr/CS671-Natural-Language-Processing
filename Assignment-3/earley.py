@@ -7,7 +7,7 @@ class EarleyParser():
         self.grammar = self.__read_grammar(rules)
         self.__get_terminals_nonTerminals()
         self.counter = -1
-        self.debug = 1
+        self.debug = 0 
 
     def __read_grammar(self, f):
         '''
@@ -98,8 +98,18 @@ class EarleyParser():
         return
 
     def __get_POS(self, word):
-        #TODO
-        return [word]
+        pos = []
+        if word in ['the']:
+            pos.append("Det")
+        elif word in ['through']:
+            pos.append("Preposition")
+        if word in ['Houston']:
+            pos.extend(["PP", "Houston"])
+        elif word in ['book']:
+            pos.extend(["Noun", "Verb", "book"])
+        else:
+            pos.append(word)
+        return pos 
 
     def __scanner(self, chart, state, sentence):
         if len(sentence) > state["j"]:

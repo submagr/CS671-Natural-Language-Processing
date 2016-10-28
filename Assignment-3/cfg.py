@@ -3,6 +3,7 @@ from pprint import pprint
 class CYKParser(): 
     def __init__(self, rules = 'data/rules'):
         self.grammar = self.__read_grammar(rules)
+        self.__get_terminals_nonTerminals()
 
     def __read_grammar(self, f):
         '''
@@ -47,10 +48,42 @@ class CYKParser():
             rhs.append(self.__to_tree(sentence, table, ptrTable, ptrTable[i][j][k][0]))
             rhs.append(self.__to_tree(sentence, table, ptrTable, ptrTable[i][j][k][1]))
         else: 
-            rhs = [sentence[i-1]]
+            rhs = [sentence[i]]
         tree.extend(rhs)
         return tree
-        
+
+    def __get_terminals_nonTerminals(self):
+        #get set of symbols 
+        symbols = set()
+        for lhs, possibleRHSs in self.grammar["lr"].items():
+            symbols.add(lhs)
+            for rhs in possibleRHSs:
+                for i in range(len(rhs)):
+                    symbols.add(rhs[i])
+        self.terminals = set()
+        self.nonTerminals = set()
+        for symbol in symbols: 
+            if symbol in self.grammar["lr"]:
+                self.nonTerminals.add(symbol)
+            else:
+                self.terminals.add(symbol)
+        assert(len(set.intersection(self.terminals, self.nonTerminals)) == 0)
+
+    def __get_POS(self, word):
+        pos = []
+        if word in ['the']:
+            pos.append("Det")
+        if word in ['through']:
+            pos.append("Preposition")
+        if word in ['Houston']:
+            pos.append("PP")
+        if word in ['book']:
+            pos.append("Verb")
+        if word in ['book']:
+            pos.append("Noun")
+        return pos 
+
+       
     def parse(self, sentence):
         '''
         Takes a sentence as list of words,
@@ -61,12 +94,12 @@ class CYKParser():
         ptrTable = [ [[] for x in range(length)] for x in range(length)]
 
         for j in range(1, length):
-            table[j-1][j] = self.__producers(tuple([sentence[j-1]]))
-            #print ">", j 
+            table[j-1][j].extend(self.__producers(tuple([sentence[j-1]])))
+            pos_tags = self.__get_POS(sentence[j-1])
+            # Add symbol if If not already in table[j-1][j]
+            [table[j-1][j].append(x) for x in pos_tags if x not in table[j-1][j]]
             for i in range(j-2, -1, -1):
-                #print ">", j, i
                 for k in range(i+1, j):
-                    #print ">", j, i, k
                     for l, B in enumerate(table[i][k]):
                         for m, C in enumerate(table[k][j]):
                             lhs = self.__producers((B,C)) 
